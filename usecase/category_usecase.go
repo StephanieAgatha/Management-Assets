@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"final-project-enigma-clean/exception"
 	"final-project-enigma-clean/model"
 	"final-project-enigma-clean/repository"
 	"final-project-enigma-clean/util/helper"
@@ -23,7 +24,7 @@ type categoryUsecase struct {
 func (c *categoryUsecase) FindById(id string) (model.Category, error) {
 	category, err := c.repo.FindById(id)
 	if err != nil {
-		return model.Category{}, fmt.Errorf("category not found")
+		return model.Category{}, exception.BadRequestErr("category not found")
 	}
 	return category, nil
 
@@ -32,7 +33,7 @@ func (c *categoryUsecase) FindById(id string) (model.Category, error) {
 // CreateNew implements CategoryUseCase.
 func (c *categoryUsecase) CreateNew(payload model.Category) error {
 	if payload.Name == "" {
-		return fmt.Errorf("name is required")
+		return exception.BadRequestErr("name is required")
 	}
 
 	//commented for unit testing
@@ -69,7 +70,7 @@ func (c *categoryUsecase) FindAll() ([]model.Category, error) {
 // Update implements CategoryUseCase.
 func (c *categoryUsecase) Update(payload model.Category) error {
 	if payload.Name == "" {
-		return fmt.Errorf("name is required")
+		return exception.BadRequestErr("name is required")
 	}
 	_, err := c.FindById(payload.Id)
 	if err != nil {

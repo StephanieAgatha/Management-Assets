@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"final-project-enigma-clean/exception"
 	"final-project-enigma-clean/model"
 	"final-project-enigma-clean/model/dto"
 	"final-project-enigma-clean/repository"
@@ -26,7 +27,7 @@ type manageAssetUsecase struct {
 // FindTransactionByName implements ManageAssetUsecase.
 func (m *manageAssetUsecase) FindTransactionByName(name string) ([]model.ManageAsset, error) {
 	if name == "" {
-		return nil, fmt.Errorf("name cannot empty")
+		return nil, exception.BadRequestErr("name cannot empty")
 	}
 
 	transactions, transactionDetails, err := m.repo.FindByNameTransaction(name)
@@ -57,7 +58,7 @@ func (m *manageAssetUsecase) FindTransactionByName(name string) ([]model.ManageA
 // CreateTransaction implements ManageAssetUsecase.
 func (m *manageAssetUsecase) CreateTransaction(payload dto.ManageAssetRequest) error {
 	if payload.NikStaff == "" {
-		return fmt.Errorf("nik staff cannot empty")
+		return exception.BadRequestErr("nik staff cannot empty")
 	}
 
 	payload.Id = helper.GenerateUUID()
@@ -65,24 +66,24 @@ func (m *manageAssetUsecase) CreateTransaction(payload dto.ManageAssetRequest) e
 	//looping for validation request detail
 	for _, detail := range payload.ManageAssetDetailReq {
 		if detail.IdAsset == "" {
-			return fmt.Errorf("id asset cannot empty")
+			return exception.BadRequestErr("id asset cannot empty")
 		}
 
 		if detail.Status == "" {
-			return fmt.Errorf("status cannot empty")
+			return exception.BadRequestErr("status cannot empty")
 		}
 
 		if detail.TotalItem < 0 {
-			return fmt.Errorf("total item must equal than 0")
+			return exception.BadRequestErr("total item must equal than 0")
 		}
 
 		asset, err := m.assetUC.FindById(detail.IdAsset)
 		if err != nil {
-			return fmt.Errorf(err.Error())
+			return err
 		}
 		//valdiation asset amount available or not
 		if asset.Available < detail.TotalItem {
-			return fmt.Errorf("Barang tidak cukup")
+			return exception.BadRequestErr("Barang tidak cukup")
 		}
 		detail.Id = helper.GenerateUUID()
 		newManageDetail = append(newManageDetail, detail)
@@ -123,7 +124,7 @@ func (m *manageAssetUsecase) ShowAllAsset() ([]model.ManageAsset, error) {
 func (m *manageAssetUsecase) FindByTransactionID(id string) ([]model.ManageAsset, error) {
 	//TODO implement me
 	if id == "" {
-		return nil, fmt.Errorf("ID is required")
+		return nil, exception.BadRequestErr("ID is required")
 	}
 
 	transactions, transactionDetails, err := m.repo.FindAllByTransId(id)

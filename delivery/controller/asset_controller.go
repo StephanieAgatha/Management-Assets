@@ -42,7 +42,7 @@ func (a *AssetController) ListAssetHandler(c *gin.Context) {
 	if name != "" {
 		assets, err := a.usecase.FindByName(name)
 		if err != nil {
-			c.AbortWithStatusJSON(500, gin.H{"status": "Error", "message": err.Error()})
+			c.Error(err)
 			return
 		}
 
@@ -58,7 +58,7 @@ func (a *AssetController) ListAssetHandler(c *gin.Context) {
 		Size: size,
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"status": "Error", "message": err.Error()})
+		c.Error(err)
 		return
 	}
 	c.JSON(200, gin.H{
@@ -74,7 +74,7 @@ func (a *AssetController) findByIdHandler(c *gin.Context) {
 
 	asset, err := a.usecase.FindById(id)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"status": "Error", "message": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -95,7 +95,7 @@ func (a *AssetController) updateHandler(c *gin.Context) {
 
 	err = a.usecase.Update(assetRequest)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"status": "Error", "message": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -108,7 +108,7 @@ func (a *AssetController) deleteHandler(c *gin.Context) {
 
 	err := a.usecase.Delete(id)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"status": "Error", "message": err.Error()})
+		c.Error(err)
 		return
 	}
 

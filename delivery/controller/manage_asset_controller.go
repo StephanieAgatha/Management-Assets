@@ -19,7 +19,7 @@ func (m *ManageAssetController) ShowAllAssetHandler(c *gin.Context) {
 
 	mAssets, err := m.manageAssetUC.ShowAllAsset()
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 	c.JSON(200, gin.H{"Message": "Success", "Data": mAssets})
@@ -36,7 +36,7 @@ func (m *ManageAssetController) CreateNewAssetHandler(c *gin.Context) {
 	}
 
 	if err := m.manageAssetUC.CreateTransaction(manageAssetReq); err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"error": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -49,7 +49,7 @@ func (m *ManageAssetController) FindByIdTransaction(c *gin.Context) {
 
 	detailAssets, err := m.manageAssetUC.FindByTransactionID(id)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"Error": "Failed to find transaction", "Fail": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -66,7 +66,7 @@ func (m *ManageAssetController) FindByName(c *gin.Context) {
 
 	result, err := m.manageAssetUC.FindTransactionByName(staff.Name)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"Error": "Failed to find transaction", "Fail": err.Error()})
+		c.Error(err)
 		return
 	}
 
@@ -80,7 +80,7 @@ func (m *ManageAssetController) DownloadAssetsHandler(c *gin.Context) {
 	c.Set("Content-Disposition", `attachment; filename="data-assets.csv"`)
 	csvData, err := m.manageAssetUC.DownloadAssets()
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{"Error": "Failed to download staff data"})
+		c.Error(err)
 		return
 	}
 	c.Data(http.StatusOK, "text/csv", csvData)

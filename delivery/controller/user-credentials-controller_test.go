@@ -59,6 +59,33 @@ func (suite *RegisterControllerTestSuite) TestCreateUserHandler_Success() {
 	json.Unmarshal(response, &userResp)
 	assert.Equal(suite.T(), http.StatusOK, record.Code)
 }
+func (suite *RegisterControllerTestSuite) TestCreateUserHandler_JSONInvalid() {
+	mockData := model.UserRegisterRequest{
+		Email:    "elliz@gmail.com",
+		Password: "N@ufa282",
+		Name:     "pal",
+		IsActive: true,
+	}
+
+	suite.usecase.On("RegisterUser", mockData).Return(nil)
+	mockRg := suite.router.Group("/api/v1")
+	NewUserController(suite.usecase, mockRg).Route()
+
+	record := httptest.NewRecorder()
+
+	// marshal, err := json.Marshal(mockData)
+	// assert.NoError(suite.T(), err)
+
+	request, err := http.NewRequest(http.MethodPost, "/api/v1/register", nil)
+	assert.NoError(suite.T(), err)
+
+	suite.router.ServeHTTP(record, request)
+	response := record.Body.Bytes()
+
+	var userResp model.UserRegisterRequest
+	json.Unmarshal(response, &userResp)
+	assert.Equal(suite.T(), http.StatusBadRequest, record.Code)
+}
 
 func (suite *RegisterControllerTestSuite) TestCreateUser_InvalidEmail() {
 	mockData := model.UserRegisterRequest{

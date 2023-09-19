@@ -57,7 +57,7 @@ func (a *assetUsecase) UpdateAvailable(id string, amount int) error {
 // FindByName implements AssetUsecase.
 func (a *assetUsecase) FindByName(name string) ([]model.Asset, error) {
 	if name == "" {
-		return nil, fmt.Errorf("name cannot empty")
+		return nil, exception.BadRequestErr("name cannot empty")
 	}
 
 	assets, err := a.repo.FindByName(name)
@@ -73,13 +73,13 @@ func (a *assetUsecase) Create(payload model.AssetRequest) error {
 		return exception.BadRequestErr("name cannot empty")
 	}
 	if payload.AssetTypeId == "" || payload.CategoryId == "" {
-		return fmt.Errorf("asset type id or category id cannot empty")
+		return exception.BadRequestErr("asset type id or category id cannot empty")
 	}
 	if payload.Total < 0 {
-		return fmt.Errorf("Total cannot negative number")
+		return exception.BadRequestErr("Total cannot negative number")
 	}
 	if payload.Status == "" {
-		return fmt.Errorf("status cannot empty")
+		return exception.BadRequestErr("status cannot empty")
 	}
 
 	//implement asset type find by id
@@ -135,7 +135,7 @@ func (a *assetUsecase) FindAll() ([]model.Asset, error) {
 func (a *assetUsecase) FindById(id string) (model.Asset, error) {
 	asset, err := a.repo.FindById(id)
 	if err != nil {
-		return model.Asset{}, fmt.Errorf("asset by id:%s cannot found, err:%s", id, err)
+		return model.Asset{}, exception.BadRequestErr(fmt.Sprintf("asset by id:%s cannot found, err:%s", id, err))
 	}
 
 	return asset, nil
@@ -144,16 +144,16 @@ func (a *assetUsecase) FindById(id string) (model.Asset, error) {
 // Update implements AssetUsecase.
 func (a *assetUsecase) Update(payload model.AssetRequest) error {
 	if payload.Name == "" {
-		return fmt.Errorf("name cannot empty")
+		return exception.BadRequestErr("name cannot empty")
 	}
 	if payload.AssetTypeId == "" || payload.CategoryId == "" {
-		return fmt.Errorf("asset type id or category id cannot empty")
+		return exception.BadRequestErr("asset type id or category id cannot empty")
 	}
 	if payload.Total < 0 {
-		return fmt.Errorf("amoun cannot negative number")
+		return exception.BadRequestErr("amoun cannot negative number")
 	}
 	if payload.Status == "" {
-		return fmt.Errorf("status cannot empty")
+		return exception.BadRequestErr("status cannot empty")
 	}
 
 	//implement asset type find by id

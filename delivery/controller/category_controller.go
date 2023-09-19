@@ -25,9 +25,7 @@ func (cc *CategoryController) createHandlerCategory(c *gin.Context) {
 	// category.Id = helper.GenerateUUID()
 	err := cc.categoryUC.CreateNew(category)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"message": err.Error(),
-		})
+		c.Error(err)
 		return
 	}
 	response := gin.H{
@@ -39,9 +37,7 @@ func (cc *CategoryController) listHandlerCategory(c *gin.Context) {
 
 	category, err := cc.categoryUC.FindAll()
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"message": err.Error(),
-		})
+		c.Error(err)
 		return
 	}
 	response := gin.H{
@@ -54,9 +50,7 @@ func (cc *CategoryController) getByIdteHandlerCategory(c *gin.Context) {
 	id := c.Param("id")
 	category, err := cc.categoryUC.FindById(id)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"message": err.Error(),
-		})
+		c.Error(err)
 		return
 	}
 	response := gin.H{
@@ -77,9 +71,7 @@ func (cc *CategoryController) updateHandlerCategory(c *gin.Context) {
 	}
 	err := cc.categoryUC.Update(category)
 	if err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"message": err.Error(),
-		})
+		c.Error(err)
 		return
 	}
 	c.JSON(200, gin.H{
@@ -89,9 +81,7 @@ func (cc *CategoryController) updateHandlerCategory(c *gin.Context) {
 func (cc *CategoryController) deleteHandlerCategory(c *gin.Context) {
 	id := c.Param("id")
 	if err := cc.categoryUC.Delete(id); err != nil {
-		c.AbortWithStatusJSON(500, gin.H{
-			"message": err.Error(),
-		})
+		c.Error(err)
 		return
 	}
 	message := fmt.Sprintf("successfulyy delete category with id %s", id)
